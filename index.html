@@ -1,1 +1,514 @@
-gonna publish when ill be at home
+<!DOCTYPE html>
+<html lang="ru" class="h-full">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>bio ✦</title>
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+    }
+  </script>
+
+  <!-- Google Fonts Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Скрипт защиты от мигания темы (FOUC) -->
+  <script>
+    (function() {
+      const savedTheme = localStorage.getItem('theme');
+      if (savedTheme === 'dark' || (!savedTheme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+        document.documentElement.classList.add('dark');
+      } else {
+        document.documentElement.classList.remove('dark');
+      }
+    })();
+  </script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jsmediatags/3.9.5/jsmediatags.min.js"></script>
+
+  <style>
+    /* Анимация появления содержимого вкладок */
+    .tab-content:not(.hidden) {
+      animation: tabFadeIn 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+
+    /* Анимации для обложки и текста */
+    .track-slide-out {
+      animation: slideOutUp 0.2s cubic-bezier(0.4, 0, 1, 1) forwards;
+    }
+
+    .track-slide-in {
+      animation: slideInUp 0.25s cubic-bezier(0, 0, 0.2, 1) forwards;
+    }
+
+    @keyframes slideOutUp {
+      from {
+        opacity: 1;
+        transform: translateY(0);
+      }
+      to {
+        opacity: 0;
+        transform: translateY(-8px);
+      }
+    }
+
+    @keyframes slideInUp {
+      from {
+        opacity: 0;
+        transform: translateY(8px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes tabFadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(8px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .tab-content:not(.hidden) {
+        animation: none;
+      }
+    }
+  </style>
+</head>
+<body class="min-h-full flex flex-col font-sans bg-white dark:bg-[#0a0a0a] text-neutral-900 dark:text-neutral-100 transition-colors duration-300">
+
+  <div class="min-h-screen p-8 sm:p-12 font-sans">
+    <div class="max-w-2xl mx-auto">
+      
+      <!-- Header & Navigation -->
+      <header class="mb-8">
+        <div class="flex items-center justify-between mb-4">
+          <div class="flex items-center gap-3">
+            <div class="flex items-center gap-3">
+              <div class="relative flex items-center justify-center">
+                <img id="discord-avatar" class="w-8 h-8 rounded-full object-cover border border-neutral-200 dark:border-neutral-700/80" alt="discord pfp">
+                <span id="discord-dot" class="absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-full border-2 border-white dark:border-[#0a0a0a] bg-neutral-300 dark:bg-neutral-700 transition-colors"></span>
+              </div>
+            
+              <div>
+                <h1 class="text-2xl font-normal tracking-tight leading-none">mir4xxq</h1>
+                <span id="discord-status-text" class="text-xs text-neutral-400 dark:text-neutral-500 font-mono">@username</span>
+              </div>
+            </div>
+          </div>
+        
+          <!-- Кнопка переключения темы -->
+          <button id="theme-toggle" class="p-1.5 rounded-lg transition-colors bg-neutral-100 hover:bg-neutral-200 dark:bg-neutral-800 dark:hover:bg-neutral-700 text-neutral-600 dark:text-neutral-300" title="Toggle theme" aria-label="Toggle theme">
+            <svg id="theme-sun" class="w-4 h-4 hidden dark:block" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"></path></svg>
+            <svg id="theme-moon" class="w-4 h-4 block dark:hidden" fill="currentColor" viewBox="0 0 20 20"><path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path></svg>
+          </button>
+        </div>
+        
+        <!-- Music Player -->
+        <div id="music-player" class="flex items-center gap-3">
+          <!-- Кнопка Prev -->
+          <button id="music-prev-btn" class="w-6 h-6 flex items-center justify-center text-neutral-400 hover:text-neutral-200 transition-colors" aria-label="Previous track">
+            <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24"><polygon points="19 20 9 12 19 4 19 20"></polygon><line x1="5" y1="19" x2="5" y2="5" stroke="currentColor" stroke-width="2"></line></svg>
+          </button>
+        
+          <!-- Кнопка Play / Pause -->
+          <button id="music-play-btn" class="flex-shrink-0 w-8 h-8 flex items-center justify-center rounded-full bg-neutral-100 hover:bg-neutral-200 dark:bg-neutral-800 dark:hover:bg-neutral-700 text-neutral-700 dark:text-neutral-300 transition-colors" aria-label="Play music">
+            <svg id="icon-play" class="w-3.5 h-3.5 translate-x-px" fill="currentColor" viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+            <svg id="icon-pause" class="w-3.5 h-3.5 hidden" fill="currentColor" viewBox="0 0 24 24"><rect x="6" y="4" width="4" height="16"></rect><rect x="14" y="4" width="4" height="16"></rect></svg>
+          </button>
+        
+          <!-- Кнопка Next -->
+          <button id="music-next-btn" class="w-6 h-6 flex items-center justify-center text-neutral-400 hover:text-neutral-200 transition-colors" aria-label="Next track">
+            <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24"><polygon points="5 4 15 12 5 20 5 4"></polygon><line x1="19" y1="5" x2="19" y2="19" stroke="currentColor" stroke-width="2"></line></svg>
+          </button>
+        
+          <!-- Обложка + Информация о треке + Прогресс-бар -->
+          <div class="flex-1 min-w-0 flex items-center gap-3 ml-1">
+            
+            <!-- Обложка альбома -->
+            <img id="track-cover" class="w-10 h-10 rounded-md object-cover flex-shrink-0 bg-neutral-800 border border-neutral-200/50 dark:border-neutral-800" src="" alt="Album cover">
+          
+            <!-- Название, автор и прогресс -->
+            <div class="flex-1 min-w-0">
+              <div class="flex items-end justify-between mb-1 gap-2">
+                <!-- Анимируемый блок (Обложка + Текст подхватывают анимацию вместе) -->
+                <div id="track-info-container" class="min-w-0 flex-1">
+                  <div id="track-title" class="text-xs font-bold text-neutral-800 dark:text-neutral-200 truncate">Title</div>
+                  <div id="track-artist" class="text-[11px] font-mono text-neutral-400 dark:text-neutral-500 truncate">Artist</div>
+                </div>
+                
+                <!-- Время -->
+                <span id="music-time" class="text-xs font-mono text-neutral-400 dark:text-neutral-500 flex-shrink-0 tabular-nums self-center">0:00 / 0:00</span>
+              </div>
+            
+              <!-- Прогресс-бар -->
+              <div id="music-progress-track" class="relative h-1 w-full rounded-full bg-neutral-200 dark:bg-neutral-800 cursor-pointer group">
+                <div id="music-progress-fill" class="h-full rounded-full bg-neutral-500 dark:bg-neutral-400 transition-none pointer-events-none" style="width: 0%"></div>
+              </div>
+            </div>
+          
+          </div>
+        </div>
+        
+        <audio id="music-audio" preload="metadata"></audio>
+
+        <!-- Navigation Tabs -->
+        <nav class="relative flex gap-6 mb-5 text-base font-normal select-none" id="nav-container">
+          <button data-tab="info" class="tab-btn cursor-pointer transition-colors duration-200 text-neutral-900 dark:text-neutral-100 py-1">info</button>
+          <button data-tab="work" class="tab-btn cursor-pointer transition-colors duration-200 text-neutral-400 dark:text-neutral-500 hover:text-neutral-700 dark:hover:text-neutral-300 py-1">work</button>
+          <button data-tab="contact" class="tab-btn cursor-pointer transition-colors duration-200 text-neutral-400 dark:text-neutral-500 hover:text-neutral-700 dark:hover:text-neutral-300 py-1">contact</button>
+        
+          <!-- Скользящая линия -->
+          <div id="tab-indicator" class="absolute bottom-0 h-[1.5px] bg-neutral-900 dark:bg-neutral-100 transition-all duration-300 ease-[cubic-bezier(0.25,1,0.5,1)] pointer-events-none"></div>
+        </nav>
+      </header>
+
+      <!-- Main Content Tabs Container -->
+      <main class="text-base leading-relaxed text-neutral-700 dark:text-neutral-300">
+        
+        <!-- Tab 1: INFO -->
+        <div id="tab-info" class="tab-content space-y-5">
+          <p class="leading-relaxed">i'm mir4xxq, developer and music enjoyer. building minimal software for convenience.</p>
+          
+          <div class="pt-2">
+            <p class="text-xs text-neutral-400 dark:text-neutral-500 mb-1 font-mono tracking-wide">technical skills</p>
+            <p class="leading-relaxed text-neutral-800 dark:text-neutral-200">python, javascript, lua, html, tailwind css</p>
+          </div>
+
+          <div>
+            <p class="text-xs text-neutral-400 dark:text-neutral-500 mb-1 font-mono tracking-wide">interests</p>
+            <p class="leading-relaxed text-neutral-800 dark:text-neutral-200">open source, customization, music</p>
+          </div>
+        </div>
+
+        <!-- Tab 2: WORK -->
+        <div id="tab-work" class="tab-content space-y-5 hidden">
+          <p class="text-xs text-neutral-400 dark:text-neutral-500 font-mono tracking-wide mb-2">projects & open source</p>
+          
+          <div class="space-y-4">
+            <div class="p-4 rounded-xl border border-neutral-200/80 dark:border-neutral-800/80 bg-neutral-50/50 dark:bg-neutral-900/30 hover:border-neutral-300 dark:hover:border-neutral-700 transition-all">
+              <a href="https://github.com/mir4xxq/savage.systems-discord-bot" target="_blank" rel="noopener noreferrer" class="font-medium text-neutral-900 dark:text-neutral-100 hover:underline">discord bot</a>
+              <p class="text-xs text-neutral-400 dark:text-neutral-500 font-mono my-1">authentication discord bot</p>
+              <p class="text-xs text-neutral-600 dark:text-neutral-300">lightweight bot designed for easy and fast database editing.</p>
+            </div>
+
+            <div class="p-4 rounded-xl border border-neutral-200/80 dark:border-neutral-800/80 bg-neutral-50/50 dark:bg-neutral-900/30 hover:border-neutral-300 dark:hover:border-neutral-700 transition-all">
+              <a href="https://github.com/mir4xxq/savage.systems" target="_blank" rel="noopener noreferrer" class="font-medium text-neutral-900 dark:text-neutral-100 hover:underline">savage.systems</a>
+              <p class="text-xs text-neutral-400 dark:text-neutral-500 font-mono my-1">private software</p>
+              <p class="text-xs text-neutral-600 dark:text-neutral-300">custom client with clean ui and rich features for dominance.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tab 3: CONTACT -->
+        <div id="tab-contact" class="tab-content space-y-4 hidden">
+          <p class="text-xs text-neutral-400 dark:text-neutral-500 font-mono tracking-wide mb-2">connect & links</p>
+          
+          <div class="space-y-2">
+            <div class="flex items-center justify-between py-2 border-b border-neutral-100 dark:border-neutral-900">
+              <span class="text-xs font-mono text-neutral-400 dark:text-neutral-500">discord</span>
+              <a href="https://discord.com/users/991978498069643284" target="_blank" rel="noopener noreferrer" class="text-neutral-800 dark:text-neutral-200 hover:underline">mir4xxq (991978498069643284)</a>
+            </div>
+
+            <div class="flex items-center justify-between py-2 border-b border-neutral-100 dark:border-neutral-900">
+              <span class="text-xs font-mono text-neutral-400 dark:text-neutral-500">telegram</span>
+              <a href="https://t.me/mir4xxq" target="_blank" rel="noopener noreferrer" class="text-neutral-800 dark:text-neutral-200 hover:underline">@mir4xxq</a>
+            </div>
+
+            <div class="flex items-center justify-between py-2 border-b border-neutral-100 dark:border-neutral-900">
+              <span class="text-xs font-mono text-neutral-400 dark:text-neutral-500">github</span>
+              <a href="https://github.com/mir4xxq" target="_blank" rel="noopener noreferrer" class="text-neutral-800 dark:text-neutral-200 hover:underline">github.com/mir4xxq</a>
+            </div>
+
+          </div>
+        </div>
+
+      </main>
+
+      <!-- Footer -->
+      <footer class="mt-12 pt-6 border-t border-neutral-100 dark:border-neutral-900 flex justify-between items-center text-xs text-neutral-400 dark:text-neutral-600 font-mono">
+        <span>@ savage.systems | 2026</span>
+        <span id="footer-time">--:--:--</span>
+      </footer>
+
+    </div>
+  </div>
+
+  <!-- JS Scripts -->
+  <script>
+    // ==========================================
+    // 1. НАСТРОЙКИ
+    // ==========================================
+    const DISCORD_ID = "991978498069643284"; // Вставь сюда свой Discord ID
+
+    // ==========================================
+    // 2. ВКЛАДКИ И СКОЛЬЗЯЩИЙ ИНДИКАТОР
+    // ==========================================
+    const tabBtns = document.querySelectorAll('.tab-btn');
+    const tabContents = document.querySelectorAll('.tab-content');
+    const indicator = document.getElementById('tab-indicator');
+    const navContainer = document.getElementById('nav-container');
+
+    let activeTabBtn = tabBtns[0];
+
+    function updateIndicator(targetBtn) {
+      if (!targetBtn || !navContainer || !indicator) return;
+      const navRect = navContainer.getBoundingClientRect();
+      const btnRect = targetBtn.getBoundingClientRect();
+
+      const left = btnRect.left - navRect.left;
+      const width = btnRect.width;
+
+      indicator.style.left = `${left}px`;
+      indicator.style.width = `${width}px`;
+    }
+
+    window.addEventListener('load', () => updateIndicator(activeTabBtn));
+    window.addEventListener('resize', () => updateIndicator(activeTabBtn));
+
+    tabBtns.forEach(btn => {
+      btn.addEventListener('mouseenter', () => updateIndicator(btn));
+      btn.addEventListener('mouseleave', () => updateIndicator(activeTabBtn));
+
+      btn.addEventListener('click', () => {
+        const target = btn.getAttribute('data-tab');
+        activeTabBtn = btn;
+
+        tabBtns.forEach(b => {
+          b.classList.remove('text-neutral-900', 'dark:text-neutral-100');
+          b.classList.add('text-neutral-400', 'dark:text-neutral-500');
+        });
+
+        btn.classList.remove('text-neutral-400', 'dark:text-neutral-500');
+        btn.classList.add('text-neutral-900', 'dark:text-neutral-100');
+
+        tabContents.forEach(content => {
+          if (content.id === `tab-${target}`) {
+            content.classList.remove('hidden');
+          } else {
+            content.classList.add('hidden');
+          }
+        });
+
+        updateIndicator(activeTabBtn);
+      });
+    });
+
+    // ==========================================
+    // 3. ПЕРЕКЛЮЧЕНИЕ ТЕМЫ
+    // ==========================================
+    document.getElementById('theme-toggle').addEventListener('click', () => {
+      const isDark = document.documentElement.classList.toggle('dark');
+      localStorage.setItem('theme', isDark ? 'dark' : 'light');
+    });
+
+    // ==========================================
+    // 4. АУДИОПЛЕЕР С ЧТЕНИЕМ ID3-ТЕГОВ
+    // ==========================================
+    const playlist = [
+      { src: "Fried By Fluoride - The Love I Lost.mp3" },
+      { src: "track2.mp3" },
+      { src: "track3.mp3" }
+    ];
+
+    let currentTrackIndex = 0;
+
+    const audio = document.getElementById('music-audio');
+    const playBtn = document.getElementById('music-play-btn');
+    const prevBtn = document.getElementById('music-prev-btn');
+    const nextBtn = document.getElementById('music-next-btn');
+    const iconPlay = document.getElementById('icon-play');
+    const iconPause = document.getElementById('icon-pause');
+    const progressFill = document.getElementById('music-progress-fill');
+    const progressTrack = document.getElementById('music-progress-track');
+    const timeDisplay = document.getElementById('music-time');
+
+    const trackTitle = document.getElementById('track-title');
+    const trackArtist = document.getElementById('track-artist');
+    const trackCover = document.getElementById('track-cover');
+    const trackInfoContainer = document.getElementById('track-info-container');
+
+    // Дефолтная заглушка, если в MP3 нет обложки
+    const DEFAULT_COVER = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%23666' stroke-width='2'%3E%3Cpath d='M9 18V5l12-2v13'%3E%3C/path%3E%3Ccircle cx='6' cy='18' r='3'%3E%3C/circle%3E%3Ccircle cx='18' cy='16' r='3'%3E%3C/circle%3E%3C/svg%3E";
+
+    function loadTrack(index, shouldPlay = false) {
+      // 1. Анимация ухода старых данных вверх
+      trackInfoContainer.classList.remove('track-slide-in');
+      trackInfoContainer.classList.add('track-slide-out');
+
+      trackCover.classList.remove('track-slide-in');
+      trackCover.classList.add('track-slide-out');
+    
+      setTimeout(() => {
+        const track = playlist[index];
+        audio.src = track.src;
+      
+        // Чтение ID3-тегов из аудиофайла
+        window.jsmediatags.read(track.src, {
+          onSuccess: function(tag) {
+            const tags = tag.tags;
+          
+            // Записываем Название и Исполнителя
+            trackTitle.textContent = tags.title || track.src.split('/').pop().replace('.mp3', '');
+            trackArtist.textContent = tags.artist || "Unknown Artist";
+          
+            // Записываем Обложку из байтов картинки
+            const picture = tags.picture;
+            if (picture) {
+              let base64String = "";
+              for (let i = 0; i < picture.data.length; i++) {
+                base64String += String.fromCharCode(picture.data[i]);
+              }
+              const base64 = "data:" + picture.format + ";base64," + window.btoa(base64String);
+              trackCover.src = base64;
+            } else {
+              trackCover.src = DEFAULT_COVER;
+            }
+          },
+          onError: function(error) {
+            // Фоллбэк, если файл локальный или теги битые
+            console.log("ID3 error:", error);
+            trackTitle.textContent = track.src.split('/').pop().replace('.mp3', '');
+            trackArtist.textContent = "Unknown Artist";
+            trackCover.src = DEFAULT_COVER;
+          }
+        });
+      
+        progressFill.style.width = '0%';
+        timeDisplay.textContent = '0:00 / 0:00';
+      
+        // 2. Анимация появления новых данных снизу
+        trackInfoContainer.classList.remove('track-slide-out');
+        trackInfoContainer.classList.add('track-slide-in');
+      
+        trackCover.classList.remove('track-slide-out');
+        trackCover.classList.add('track-slide-in');
+      
+        if (shouldPlay) {
+          playTrack();
+        }
+      }, 200);
+    }
+
+    function playTrack() {
+      audio.play();
+      iconPlay.classList.add('hidden');
+      iconPause.classList.remove('hidden');
+    }
+
+    function pauseTrack() {
+      audio.pause();
+      iconPlay.classList.remove('hidden');
+      iconPause.classList.add('hidden');
+    }
+
+    playBtn.addEventListener('click', () => {
+      if (audio.paused) {
+        playTrack();
+      } else {
+        pauseTrack();
+      }
+    });
+
+    prevBtn.addEventListener('click', () => {
+      currentTrackIndex = (currentTrackIndex - 1 + playlist.length) % playlist.length;
+      loadTrack(currentTrackIndex, true);
+    });
+
+    nextBtn.addEventListener('click', () => {
+      currentTrackIndex = (currentTrackIndex + 1) % playlist.length;
+      loadTrack(currentTrackIndex, true);
+    });
+
+    audio.addEventListener('ended', () => {
+      currentTrackIndex = (currentTrackIndex + 1) % playlist.length;
+      loadTrack(currentTrackIndex, true);
+    });
+
+    function fmtTime(s) {
+      if (isNaN(s)) return "0:00";
+      const m = Math.floor(s / 60);
+      const sec = Math.floor(s % 60);
+      return `${m}:${sec < 10 ? '0' : ''}${sec}`;
+    }
+
+    audio.addEventListener('timeupdate', () => {
+      if (audio.duration) {
+        progressFill.style.width = `${(audio.currentTime / audio.duration) * 100}%`;
+        timeDisplay.textContent = `${fmtTime(audio.currentTime)} / ${fmtTime(audio.duration)}`;
+      }
+    });
+
+    progressTrack.addEventListener('click', (e) => {
+      const rect = progressTrack.getBoundingClientRect();
+      const pos = (e.clientX - rect.left) / rect.width;
+      audio.currentTime = pos * audio.duration;
+    });
+
+    // Инициализация первого трека при загрузке
+    loadTrack(currentTrackIndex);
+
+    // ==========================================
+    // 5. DISCORD LANYARD API
+    // ==========================================
+    async function fetchLanyard() {
+      try {
+        const res = await fetch(`https://api.lanyard.rest/v1/users/${DISCORD_ID}`);
+        const { data } = await res.json();
+        
+        const avatarImg = document.getElementById('discord-avatar');
+        const statusDot = document.getElementById('discord-dot');
+        const statusText = document.getElementById('discord-status-text');
+        const listeningText = document.getElementById('listening-text');
+
+        if (data.discord_user.avatar) {
+          avatarImg.src = `https://cdn.discordapp.com/avatars/${DISCORD_ID}/${data.discord_user.avatar}.png`;
+          avatarImg.classList.remove('hidden');
+        }
+        statusText.textContent = `@${data.discord_user.username}`;
+
+        const colors = { 
+          online: 'bg-emerald-500', 
+          idle: 'bg-amber-500', 
+          dnd: 'bg-rose-500', 
+          offline: 'bg-neutral-500' 
+        };
+        statusDot.className = `absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-full border-2 border-white dark:border-[#0a0a0a] ${colors[data.discord_status] || 'bg-neutral-500'}`;
+
+        if (data.listening_to_spotify) {
+          listeningText.textContent = `${data.spotify.artist} — ${data.spotify.song}`;
+        } else {
+          listeningText.textContent = 'nothing';
+        }
+      } catch (e) { 
+        console.error("Lanyard error:", e); 
+      }
+    }
+
+    fetchLanyard();
+    setInterval(fetchLanyard, 10000);
+
+    // ==========================================
+    // 6. ЖИВОЕ ВРЕМЯ В ФУТЕРЕ
+    // ==========================================
+    function updateClock() {
+      const now = new Date();
+      document.getElementById('footer-time').textContent = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+    }
+    setInterval(updateClock, 1000);
+    updateClock();
+  </script>
+</body>
+</html>
