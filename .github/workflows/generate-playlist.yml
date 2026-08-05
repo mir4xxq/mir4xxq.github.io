@@ -4,26 +4,32 @@ on:
   push:
     paths:
       - 'songs/**'
+      - '.github/workflows/**'
+  workflow_dispatch: # Позволяет запускать вручную из вкладки Actions
 
 jobs:
   build:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write # Даем явные права на запись файлов
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Generate playlist.json
         run: |
           echo "[" > playlist.json
           first=true
-          for file in songs/*.mp3; do
+          for file in songs/*.mp3 songs/*.MP3; do
             if [ -f "$file" ]; then
               if [ "$first" = true ]; then
                 first=false
               else
                 echo "," >> playlist.json
               fi
-              echo "{\"src\": \"$file\"}" >> playlist.json
+              # Экранируем имя файла для валидного JSON
+              filename=$(basename "$file")
+              echo "  {\"src\": \"songs/$filename\"}" >> playlist.json
             fi
           done
           echo "]" >> playlist.json
