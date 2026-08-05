@@ -362,6 +362,7 @@
     function loadTrack(index, shouldPlay = false) {
       if (!playlist.length || !playlist[index]) return;
 
+      // 1. Анимация ухода старого текста и обложки
       trackInfoContainer.classList.remove('track-slide-in');
       trackInfoContainer.classList.add('track-slide-out');
 
@@ -370,13 +371,23 @@
 
       setTimeout(() => {
         const track = playlist[index];
+
+        // Экранируем пробелы и создаем валидный HTTPS-URL
         const encodedSrc = encodeURI(track.src);
         audio.src = encodedSrc;
-        const absoluteUrl = new URL(encodedSrc, window.location.href).href;
+      
+        // Гарантируем абсолютный HTTPS путь
+        const absoluteUrl = new URL(encodedSrc, window.location.origin + window.location.pathname).href;
+      
+        // Извлекаем имя файла для фоллбэка на случай отсутствия тегов
+        const fallbackName = decodeURIComponent(track.src.split('/').pop().replace(/\.mp3$/i, ''));
+      
+        // Чтение ID3-тегов
         window.jsmediatags.read(absoluteUrl, {
+          // Принудительно используем сетевой веб-ридер, чтобы избежать вызова file:///
+          reader: window.jsmediatags.Reader.XHRFileReader,
           onSuccess: function(tag) {
             const tags = tag.tags;
-            const fallbackName = decodeURIComponent(track.src.split('/').pop().replace(/\.mp3$/i, ''));
 
             trackTitle.textContent = tags.title || fallbackName;
             trackArtist.textContent = tags.artist || "Unknown Artist";
@@ -394,8 +405,7 @@
             }
           },
           onError: function(error) {
-            console.warn("Не удалось прочитать ID3-теги:", error);
-            const fallbackName = decodeURIComponent(track.src.split('/').pop().replace(/\.mp3$/i, ''));
+            // При ошибке чтения мгновенно ставим имя из названия файла
             trackTitle.textContent = fallbackName;
             trackArtist.textContent = "Unknown Artist";
             trackCover.src = DEFAULT_COVER;
@@ -405,6 +415,7 @@
         progressFill.style.width = '0%';
         timeDisplay.textContent = '0:00 / 0:00';
       
+        // 2. Анимация появления нового текста и обложки
         trackInfoContainer.classList.remove('track-slide-out');
         trackInfoContainer.classList.add('track-slide-in');
       
@@ -416,6 +427,7 @@
         }
       }, 200);
     }
+
     function playTrack() {
       audio.play();
       iconPlay.classList.add('hidden');
