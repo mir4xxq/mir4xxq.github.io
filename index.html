@@ -515,18 +515,18 @@
     // ==========================================
     async function initPlaylist() {
       try {
-        const res = await fetch('./playlist.json');
+        // ?v= + Date.now() обходит кэширование браузера при обновлении JSON
+        const res = await fetch('./playlist.json?v=' + Date.now());
         playlist = await res.json();
 
         if (playlist.length > 0) {
-          // Загружаем 1-й трек только после успешной загрузки JSON
           loadTrack(0);
         } else {
-          trackTitle.textContent = "No tracks found";
+          trackTitle.textContent = "no tracks found";
         }
       } catch (e) {
         console.error("Не удалось загрузить playlist.json", e);
-        trackTitle.textContent = "Playlist error";
+        trackTitle.textContent = "playlist error";
       }
     }
 
