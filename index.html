@@ -180,6 +180,32 @@
             </div>
           
           </div>
+
+          <!-- Контроллер громкости -->
+          <div class="flex items-center gap-2 mt-3">
+            <button id="music-mute-btn" class="text-neutral-400 hover:text-white transition cursor-pointer" title="Mute/Unmute">
+              <!-- Иконка включенного звука -->
+              <svg id="icon-volume" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072M18.364 5.636a9 9 0 010 12.728M11 5L6 9H2v6h4l5 4V5z"/>
+              </svg>
+              <!-- Иконка выключенного звука (скрыта по умолчанию) -->
+              <svg id="icon-mute" class="w-5 h-5 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"/>
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2"/>
+              </svg>
+            </button>
+          
+            <!-- Ползунок громкости (от 0.0 до 1.0) -->
+            <input 
+              id="music-volume-slider" 
+              type="range" 
+              min="0" 
+              max="1" 
+              step="0.01" 
+              value="0.8" 
+              class="w-20 accent-white cursor-pointer h-1 rounded-lg"
+            />
+          </div>
         </div>
         
         <audio id="music-audio" preload="metadata"></audio>
@@ -345,7 +371,7 @@
       "songs/Blue Rose - Cosmograph.mp3",
       "songs/Clarion - Hello Juliet.mp3",
       "songs/Computer - All in my head.mp3",
-      "songs/Erika - I Don't Know.mp3",
+      "songs/Erika - I Don't Know (speed up).mp3",
       "songs/Fried By Fluoride - The Love I Lost.mp3",
       "songs/MASS OF THE FERMENTING DREGS - Aoi, Koi, Daidaiiro No Hi.mp3",
       "songs/goreshit - gabberzon!.mp3",
@@ -494,6 +520,63 @@
       const rect = progressTrack.getBoundingClientRect();
       const pos = (e.clientX - rect.left) / rect.width;
       audio.currentTime = pos * audio.duration;
+    });
+
+    // ==========================================
+    // ЭЛЕМЕНТЫ ГРОМКОСТИ
+    // ==========================================
+    const muteBtn = document.getElementById('music-mute-btn');
+    const volumeSlider = document.getElementById('music-volume-slider');
+    const iconVolume = document.getElementById('icon-volume');
+    const iconMute = document.getElementById('icon-mute');
+      
+    let lastVolume = 0.8; // Запоминаем уровень громкости перед включением Mute
+    audio.volume = lastVolume;
+      
+    // ==========================================
+    // ЛОГИКА ГРОМКОСТИ И MUTE
+    // ==========================================
+    function updateVolumeIcons(isMuted) {
+      if (isMuted) {
+        iconVolume.classList.add('hidden');
+        iconMute.classList.remove('hidden');
+      } else {
+        iconVolume.classList.remove('hidden');
+        iconMute.classList.add('hidden');
+      }
+    }
+    
+    // Изменение громкости через ползунок
+    volumeSlider.addEventListener('input', (e) => {
+      const val = parseFloat(e.target.value);
+      audio.volume = val;
+      
+      if (val === 0) {
+        audio.muted = true;
+        updateVolumeIcons(true);
+      } else {
+        audio.muted = false;
+        lastVolume = val; // Обновляем запомненный уровень
+        updateVolumeIcons(false);
+      }
+    });
+    
+    // Кнопка Mute / Unmute
+    muteBtn.addEventListener('click', () => {
+      if (audio.muted || audio.volume === 0) {
+        // Включаем звук обратно
+        audio.muted = false;
+        audio.volume = lastVolume > 0 ? lastVolume : 0.8;
+        volumeSlider.value = audio.volume;
+        updateVolumeIcons(false);
+      } else {
+        // Выключаем звук
+        lastVolume = audio.volume;
+        audio.muted = true;
+        audio.volume = 0;
+        volumeSlider.value = 0;
+        updateVolumeIcons(true);
+      }
     });
 
     // ==========================================
