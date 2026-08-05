@@ -396,21 +396,32 @@
     // ==========================================
     function loadTrack(index, shouldPlay = false) {
       if (!playlist.length || !playlist[index]) return;
-    
+        
       trackInfoContainer.classList.remove('track-slide-in');
       trackInfoContainer.classList.add('track-slide-out');
-
+        
       trackCover.classList.remove('track-slide-in');
       trackCover.classList.add('track-slide-out');
-    
+        
       setTimeout(() => {
         const track = playlist[index];
-        audio.src = track.src;
+        
+        // 1. Экранируем пробелы в названии файла (например, "Blue Rose.mp3" -> "Blue%20Rose.mp3")
+        const encodedSrc = encodeURI(track.src);
+        audio.src = encodedSrc;
       
-        window.jsmediatags.read(track.src, {
+        // 2. Превращаем относительный путь в полный URL (https://yournick.github.io/.../songs/...)
+        const absoluteUrl = new URL(encodedSrc, window.location.href).href;
+      
+        // 3. Читаем теги по полному URL
+        window.jsmediatags.read(absoluteUrl, {
           onSuccess: function(tag) {
             const tags = tag.tags;
-            trackTitle.textContent = tags.title || track.src.split('/').pop().replace('.mp3', '');
+            
+            // Красивое имя файла на случай, если тегов title нет в файле
+            const fallbackName = decodeURIComponent(track.src.split('/').pop().replace(/\.mp3$/i, ''));
+            
+            trackTitle.textContent = tags.title || fallbackName;
             trackArtist.textContent = tags.artist || "Unknown Artist";
           
             const picture = tags.picture;
@@ -425,8 +436,10 @@
               trackCover.src = DEFAULT_COVER;
             }
           },
-          onError: function() {
-            trackTitle.textContent = track.src.split('/').pop().replace('.mp3', '');
+          onError: function(error) {
+            console.warn("Не удалось прочитать ID3-теги:", error);
+            const fallbackName = decodeURIComponent(track.src.split('/').pop().replace(/\.mp3$/i, ''));
+            trackTitle.textContent = fallbackName;
             trackArtist.textContent = "Unknown Artist";
             trackCover.src = DEFAULT_COVER;
           }
