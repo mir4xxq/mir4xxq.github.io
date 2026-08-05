@@ -47,6 +47,40 @@
       animation: slideInUp 0.25s cubic-bezier(0, 0, 0.2, 1) forwards;
     }
 
+    /* Текст с постоянным свечением и периодическим пробегающим бликом */
+    .glow-shine-text {
+      /* Базовый цвет текста + полоса яркого блика */
+      background: linear-gradient(
+        110deg,
+        rgba(255, 255, 255, 0.65) 0%,
+        rgba(255, 255, 255, 0.65) 40%,
+        rgba(255, 255, 255, 1.0) 50%, /* Яркая полоса блика */
+        rgba(255, 255, 255, 0.65) 60%,
+        rgba(255, 255, 255, 0.65) 100%
+      );
+      background-size: 200% 100%;
+      background-position: 100% 0;
+    
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    
+      /* Постоянное мягкое свечение (glow) */
+      filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.5)) 
+              drop-shadow(0 0 20px rgba(255, 255, 255, 0.25));
+    
+      /* Бесконечный цикл с кулдауном */
+      animation: glowShine 5s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+    }
+
+    @keyframes glowShine {
+      0% {
+        background-position: 100% 0;
+      }
+      100% {
+        background-position: -100% 0; /* Пауза/кулдаун (4 сек) */
+      }
+    }
+
     @keyframes slideOutUp {
       from {
         opacity: 1;
@@ -97,14 +131,20 @@
         <div class="flex items-center justify-between mb-4">
           <div class="flex items-center gap-3">
             <div class="flex items-center gap-3">
+              
               <div class="relative flex items-center justify-center">
-                <img id="discord-avatar" class="w-8 h-8 rounded-full object-cover border border-neutral-200 dark:border-neutral-700/80" alt="discord pfp">
+                <img id="discord-avatar" class="w-10 h-10 rounded-full object-cover border border-neutral-200 dark:border-neutral-700/80" alt="discord pfp">
                 <span id="discord-dot" class="absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-full border-2 border-white dark:border-[#0a0a0a] bg-neutral-300 dark:bg-neutral-700 transition-colors"></span>
               </div>
             
               <div>
-                <h1 class="text-2xl font-normal tracking-tight leading-none">mir4xxq</h1>
-                <span id="discord-status-text" class="text-xs text-neutral-400 dark:text-neutral-500 font-mono">@username</span>
+                <div class="flex items-baseline gap-2">
+                  <h1 class="text-2xl font-normal tracking-tight glow-shine-text">mir4xxq</h1>
+                  <span class="text-[6px] font-mono text-neutral-400/80 dark:text-neutral-500/80">aka q1lxxq</span>
+                </div>
+                <div class="flex items-center gap-2 mt-1">
+                  <span id="discord-status-text" class="text-xs text-neutral-400 dark:text-neutral-500 font-mono">@mir4xxq</span>
+                </div>
               </div>
             </div>
           </div>
@@ -180,8 +220,12 @@
         
         <!-- Tab 1: INFO -->
         <div id="tab-info" class="tab-content space-y-5">
-          <p class="leading-relaxed">i'm mir4xxq, developer and music enjoyer. building minimal software for convenience.</p>
           
+          <div class="pt-2">
+            <p class="text-xs text-neutral-400 dark:text-neutral-500 mb-1 font-mono tracking-wide">info</p>
+            <p class="leading-relaxed">i'm mir4xxq, developer and music enjoyer. building minimal software for convenience.</p>
+          </div>
+
           <div class="pt-2">
             <p class="text-xs text-neutral-400 dark:text-neutral-500 mb-1 font-mono tracking-wide">technical skills</p>
             <p class="leading-relaxed text-neutral-800 dark:text-neutral-200">python, javascript, lua, html, tailwind css</p>
@@ -195,19 +239,19 @@
 
         <!-- Tab 2: WORK -->
         <div id="tab-work" class="tab-content space-y-5 hidden">
-          <p class="text-xs text-neutral-400 dark:text-neutral-500 font-mono tracking-wide mb-2">projects & open source</p>
+          <p class="text-xs text-neutral-400 dark:text-neutral-500 font-mono tracking-wide mb-2">my closed projects</p>
           
           <div class="space-y-4">
-            <div class="p-4 rounded-xl border border-neutral-200/80 dark:border-neutral-800/80 bg-neutral-50/50 dark:bg-neutral-900/30 hover:border-neutral-300 dark:hover:border-neutral-700 transition-all">
-              <a href="https://github.com/mir4xxq/savage.systems-discord-bot" target="_blank" rel="noopener noreferrer" class="font-medium text-neutral-900 dark:text-neutral-100 hover:underline">discord bot</a>
-              <p class="text-xs text-neutral-400 dark:text-neutral-500 font-mono my-1">authentication discord bot</p>
-              <p class="text-xs text-neutral-600 dark:text-neutral-300">lightweight bot designed for easy and fast database editing.</p>
-            </div>
-
             <div class="p-4 rounded-xl border border-neutral-200/80 dark:border-neutral-800/80 bg-neutral-50/50 dark:bg-neutral-900/30 hover:border-neutral-300 dark:hover:border-neutral-700 transition-all">
               <a href="https://github.com/mir4xxq/savage.systems" target="_blank" rel="noopener noreferrer" class="font-medium text-neutral-900 dark:text-neutral-100 hover:underline">savage.systems</a>
               <p class="text-xs text-neutral-400 dark:text-neutral-500 font-mono my-1">private software</p>
               <p class="text-xs text-neutral-600 dark:text-neutral-300">custom client with clean ui and rich features for dominance.</p>
+            </div>
+
+            <div class="p-4 rounded-xl border border-neutral-200/80 dark:border-neutral-800/80 bg-neutral-50/50 dark:bg-neutral-900/30 hover:border-neutral-300 dark:hover:border-neutral-700 transition-all">
+              <a href="https://github.com/mir4xxq/savage.systems-discord-bot" target="_blank" rel="noopener noreferrer" class="font-medium text-neutral-900 dark:text-neutral-100 hover:underline">authentication bot</a>
+              <p class="text-xs text-neutral-400 dark:text-neutral-500 font-mono my-1">discord bot for software</p>
+              <p class="text-xs text-neutral-600 dark:text-neutral-300">lightweight bot designed for easy and fast database editing.</p>
             </div>
           </div>
         </div>
@@ -217,6 +261,16 @@
           <p class="text-xs text-neutral-400 dark:text-neutral-500 font-mono tracking-wide mb-2">connect & links</p>
           
           <div class="space-y-2">
+            <div class="flex items-center justify-between py-2 border-b border-neutral-100 dark:border-neutral-900">
+              <span class="text-xs font-mono text-neutral-400 dark:text-neutral-500">steam</span>
+              <a href="https://steamcommunity.com/id/mir4xxq" target="_blank" rel="noopener noreferrer" class="text-neutral-800 dark:text-neutral-200 hover:underline">mir4xxq</a>
+            </div>
+
+            <div class="flex items-center justify-between py-2 border-b border-neutral-100 dark:border-neutral-900">
+              <span class="text-xs font-mono text-neutral-400 dark:text-neutral-500">osu!mania</span>
+              <a href="https://osu.ppy.sh/users/38608481/mania" target="_blank" rel="noopener noreferrer" class="text-neutral-800 dark:text-neutral-200 hover:underline">q1lxxq</a>
+            </div>
+
             <div class="flex items-center justify-between py-2 border-b border-neutral-100 dark:border-neutral-900">
               <span class="text-xs font-mono text-neutral-400 dark:text-neutral-500">discord</span>
               <a href="https://discord.com/users/991978498069643284" target="_blank" rel="noopener noreferrer" class="text-neutral-800 dark:text-neutral-200 hover:underline">mir4xxq (991978498069643284)</a>
@@ -318,9 +372,9 @@
     // 4. АУДИОПЛЕЕР С ЧТЕНИЕМ ID3-ТЕГОВ
     // ==========================================
     const playlist = [
-      { src: "Fried By Fluoride - The Love I Lost.mp3" },
-      { src: "track2.mp3" },
-      { src: "track3.mp3" }
+      { src: "songs/Fried By Fluoride - The Love I Lost.mp3" },
+      { src: "songs/track2.mp3" },
+      { src: "songs/track3.mp3" }
     ];
 
     let currentTrackIndex = 0;
@@ -474,7 +528,11 @@
         const listeningText = document.getElementById('listening-text');
 
         if (data.discord_user.avatar) {
-          avatarImg.src = `https://cdn.discordapp.com/avatars/${DISCORD_ID}/${data.discord_user.avatar}.png`;
+          // Проверяем, является ли аватарка GIF-анимацией
+          const isAnimated = data.discord_user.avatar.startsWith('a_');
+          const ext = isAnimated ? 'gif' : 'png';
+
+          avatarImg.src = `https://cdn.discordapp.com/avatars/${DISCORD_ID}/${data.discord_user.avatar}.${ext}?size=128`;
           avatarImg.classList.remove('hidden');
         }
         statusText.textContent = `@${data.discord_user.username}`;
