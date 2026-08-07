@@ -43,6 +43,38 @@
       -webkit-user-drag: none;
       pointer-events: none; /* Если по картинкам не нужно кликать */
     }
+
+    /* Анимация ухода вверх и испарения */
+    .track-exit {
+      animation: slideOutUp 0.25s ease-in forwards;
+    }
+
+    /* Анимация заезда снизу и проявления */
+    .track-enter {
+      animation: slideInUp 0.25s ease-out forwards;
+    }
+
+    @keyframes slideOutUp {
+      0% {
+        opacity: 1;
+        transform: translateY(0);
+      }
+      100% {
+        opacity: 0;
+        transform: translateY(-12px);
+      }
+    }
+
+    @keyframes slideInUp {
+      0% {
+        opacity: 0;
+        transform: translateY(12px);
+      }
+      100% {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
     
     /* Анимация бегунков для ВРЕМЕНИ (#music-progress-track) и ГРОМКОСТИ (#music-volume-slider) */
     #music-progress-track::-webkit-slider-thumb,
@@ -123,11 +155,11 @@
     .glow-shine-text {
       background: linear-gradient(
         110deg,
-        rgba(255, 255, 255, 0.65) 0%,
-        rgba(255, 255, 255, 0.65) 40%,
-        rgba(255, 255, 255, 1.0) 50%,
-        rgba(255, 255, 255, 0.65) 60%,
-        rgba(255, 255, 255, 0.65) 100%
+        rgba(122, 111, 184, 0.65) 0%,
+        rgba(122, 111, 184, 0.65) 40%,
+        rgba(122, 111, 184, 1.0) 50%,
+        rgba(122, 111, 184, 0.65) 60%,
+        rgba(122, 111, 184, 0.65) 100%
       );
       background-size: 200% 100%;
       background-position: 100% 0;
@@ -135,8 +167,8 @@
       background-clip: text;
       -webkit-text-fill-color: transparent;
     
-      filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.5)) 
-              drop-shadow(0 0 20px rgba(255, 255, 255, 0.25));
+      filter: drop-shadow(0 0 10px rgba(122, 111, 184, 0.5))
+              drop-shadow(0 0 20px rgba(122, 111, 184, 0.25));
     
       animation: glowShine 5s cubic-bezier(0.4, 0, 0.2, 1) infinite;
     }
@@ -574,10 +606,10 @@
       const savedVol = localStorage.getItem(STORAGE_KEY_VOLUME);
 
       // Если значение есть — используем его, иначе устанавливаем 0.8 (80%) по умолчанию
-      let vol = savedVol !== null ? parseFloat(savedVol) : 0.8;
+      let vol = savedVol !== null ? parseFloat(savedVol) : 0.2;
 
       // Валидация на случай некорректных данных
-      if (isNaN(vol) || vol < 0 || vol > 1) vol = 0.8;
+      if (isNaN(vol) || vol < 0 || vol > 1) vol = 0.2;
     
       // Применяем громкость к элементу audio и интерфейсу
       audio.volume = vol;
@@ -751,24 +783,47 @@
 
     function loadTrack(index, shouldPlay = false) {
       if (!playlist.length || !playlist[index]) return;
-
+        
+      // Находим общий родительский контейнер обложки и текста
+      const trackInfoContainer = trackCover.closest('.flex') || trackCover.parentElement;
+        
       const trackPath = playlist[index];
       const meta = getTrackMeta(trackPath);
-
-      trackTitle.textContent = meta.title;
-      trackArtist.textContent = meta.artist;
-
-      const tempImg = new Image();
-      tempImg.src = meta.cover;
-      tempImg.onload = () => { trackCover.src = meta.cover; };
-      tempImg.onerror = () => { trackCover.src = DEFAULT_COVER; };
-
-      audio.src = encodeURI(trackPath);
-
-      renderQueue();
-
-      if (shouldPlay) {
-        playTrack();
+        
+      // Внутренняя функция подгрузки данных
+      const applyTrackData = () => {
+        trackTitle.textContent = meta.title;
+        trackArtist.textContent = meta.artist;
+      
+        const tempImg = new Image();
+        tempImg.src = meta.cover;
+        tempImg.onload = () => { trackCover.src = meta.cover; };
+        tempImg.onerror = () => { trackCover.src = DEFAULT_COVER; };
+      
+        audio.src = encodeURI(trackPath);
+      
+        renderQueue();
+      
+        if (shouldPlay) {
+          playTrack();
+        }
+      
+        // Запускаем появление снизу
+        if (trackInfoContainer) {
+          trackInfoContainer.classList.remove('track-exit');
+          trackInfoContainer.classList.add('track-enter');
+        }
+      };
+    
+      // Запуск процесса с анимацией
+      if (trackInfoContainer) {
+        trackInfoContainer.classList.remove('track-enter');
+        trackInfoContainer.classList.add('track-exit');
+      
+        // Ждем окончания ухода (250мс) и меняем данные
+        setTimeout(applyTrackData, 250);
+      } else {
+        applyTrackData();
       }
     }
 
