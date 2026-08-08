@@ -281,7 +281,7 @@
         
       <nav class="relative flex gap-6 mb-6 text-base font-normal select-none" id="nav-container">
         <div class="flex justify-center gap-10 w-full mt-0">
-          <button data-tab="info" class="tab-btn cursor-pointer transition-colors duration-200 text-neutral-900 dark:text-neutral-100 py-1">info</button>
+          <button data-tab="info" class="tab-btn cursor-pointer transition-colors duration-200 text-neutral-900 dark:text-neutral-100 hover:text-neutral-700 dark:hover:text-neutral-300 py-1">info</button>
           <button data-tab="work" class="tab-btn cursor-pointer transition-colors duration-200 text-neutral-400 dark:text-neutral-500 hover:text-neutral-700 dark:hover:text-neutral-300 py-1">work</button>
           <button data-tab="contact" class="tab-btn cursor-pointer transition-colors duration-200 text-neutral-400 dark:text-neutral-500 hover:text-neutral-700 dark:hover:text-neutral-300 py-1">contact</button>
           <div id="tab-indicator" class="absolute bottom-0 h-[1.5px] bg-neutral-900 dark:bg-neutral-100 transition-all duration-300 ease-[cubic-bezier(0.25,1,0.5,1)] pointer-events-none"></div>
@@ -387,6 +387,17 @@
         <!-- Music Player Controls -->
         <div id="music-player" class="flex flex-col gap-3">
           <div class="flex items-center gap-3">
+            <button 
+              id="shuffle-btn" 
+              type="button" 
+              title="Shuffle queue" 
+              class="text-neutral-400 hover:text-white transition-all p-2 rounded-lg hover:bg-neutral-800/50 flex items-center justify-center active:scale-95 cursor-pointer"
+            >
+              <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M10.59 9.17L5.41 4 4 5.41l5.17 5.17 1.42-1.41zM14.5 4l2.04 2.04L4 18.59 5.41 20 17.96 7.45 20 9.5V4h-5.5zm.33 9.41l-1.41 1.41 3.13 3.13L14.5 20H20v-5.5l-2.04 2.04-3.13-3.13z"/>
+              </svg>
+            </button>
+
             <button id="music-prev-btn" class="w-6 h-6 flex items-center justify-center text-neutral-400 hover:text-neutral-200 transition-colors" aria-label="Previous track">
               <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24"><polygon points="19 20 9 12 19 4 19 20"></polygon><line x1="5" y1="19" x2="5" y2="5" stroke="currentColor" stroke-width="2"></line></svg>
             </button>
@@ -398,6 +409,20 @@
           
             <button id="music-next-btn" class="w-6 h-6 flex items-center justify-center text-neutral-400 hover:text-neutral-200 transition-colors" aria-label="Next track">
               <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24"><polygon points="5 4 15 12 5 20 5 4"></polygon><line x1="19" y1="5" x2="19" y2="19" stroke="currentColor" stroke-width="2"></line></svg>
+            </button>
+            <button 
+              id="repeat-btn" 
+              type="button" 
+              title="Repeat: Off" 
+              class="text-neutral-400 hover:text-white transition-all p-2 rounded-lg hover:bg-neutral-800/50 flex items-center justify-center relative cursor-pointer active:scale-95 group"
+            >
+              <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M7 7h10v3l4-4-4-4v3H5v6h2V7zm10 10H7v-3l-4 4 4 4v-3h12v-6h-2v4z"/>
+              </svg>
+            
+              <span id="repeat-one-badge" class="hidden absolute -top-0.5 -right-0.5 bg-white text-black font-bold text-[9px] w-3.5 h-3.5 rounded-full flex items-center justify-center">1</span>
+            
+              <span id="repeat-dot" class="hidden absolute -bottom-0.5 w-1 h-1 bg-white rounded-full"></span>
             </button>
           
             <div class="flex-1 min-w-0 flex items-center gap-3 ml-1">
@@ -464,7 +489,32 @@
                     class="h-full bg-white rounded-lg w-[80%] relative transition-all duration-75 ease-linear shadow-[0_0_8px_rgba(255,255,255,0.8)]"
                   ></div>
                 </div>
+
               </div>
+
+              <div id="speed-badge-box" class="relative flex items-center">
+                <button id="speed-badge" type="button" class="px-1.5 py-1.5 text-xs font-semibold rounded-lg bg-[#181818] border border-neutral-800 text-neutral-300 hover:text-white hover:border-neutral-700 flex items-center gap-1.5 cursor-pointer">
+                  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                  </svg>
+                </button>
+              
+                <div 
+                  id="speed-popover" 
+                  class="opacity-0 scale-95 pointer-events-none transition-all duration-200 ease-out absolute bottom-full mb-1 right-0 bg-[#121212] p-3 rounded-xl border border-neutral-800/90 shadow-2xl flex flex-col gap-2.5 w-36 z-30"
+                >
+                  <div class="flex items-center justify-between text-[11px] text-neutral-400 font-medium select-none">
+                    <span>Speed & Pitch</span>
+                    <span id="speed-popover-text" class="text-neutral-300 font-semibold">1.00x</span>
+                  </div>
+                
+                  <div id="music-speed-track" class="w-full h-1.5 hover:h-2 bg-white/20 rounded-lg cursor-pointer opacity-70 hover:opacity-100 transition-all duration-300 ease-in-out relative group">
+                    <div id="music-speed-fill" class="h-full bg-white rounded-lg w-0 relative transition-all duration-75 ease-linear shadow-[0_0_8px_rgba(255,255,255,0.8)]">
+                    </div>
+                  </div>
+                </div>
+              </div>
+
             </div>
           </div>
         </div>
@@ -587,6 +637,92 @@
       }
     }
 
+    const speedBadge = document.getElementById('speed-badge');
+    const speedPopover = document.getElementById('speed-popover');
+    const speedTrack = document.getElementById('music-speed-track');
+    const speedFill = document.getElementById('music-speed-fill');
+    const speedValueText = document.getElementById('speed-value-text');
+    const speedPopoverText = document.getElementById('speed-popover-text');
+
+    function toggleSpeedPopover(show) {
+      if (show) {
+        speedPopover.classList.remove('opacity-0', 'scale-95', 'pointer-events-none');
+        speedPopover.classList.add('opacity-100', 'scale-100', 'pointer-events-auto');
+      } else {
+        speedPopover.classList.remove('opacity-100', 'scale-100', 'pointer-events-auto');
+        speedPopover.classList.add('opacity-0', 'scale-95', 'pointer-events-none');
+      }
+    }
+
+    speedBadge.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const isHidden = speedPopover.classList.contains('opacity-0');
+      toggleSpeedPopover(isHidden);
+    });
+
+    document.addEventListener('click', (e) => {
+      if (!speedPopover.contains(e.target) && e.target !== speedBadge) {
+        toggleSpeedPopover(false);
+      }
+    });
+
+    const MIN_SPEED = 0.5;
+    const MAX_SPEED = 1.5;
+    const STEP = 0.05;
+    let isDraggingSpeed = false;
+
+    let currentSpeedPercent = (1.0 - MIN_SPEED) / (MAX_SPEED - MIN_SPEED);
+
+    function setSpeedByPercent(percent) {
+      const clampedPercent = Math.max(0, Math.min(1, percent));
+      const rawSpeed = MIN_SPEED + clampedPercent * (MAX_SPEED - MIN_SPEED);
+      const snappedSpeed = Math.round(rawSpeed / STEP) * STEP;
+      currentSpeedPercent = (snappedSpeed - MIN_SPEED) / (MAX_SPEED - MIN_SPEED);
+
+      if (typeof audio !== 'undefined') {
+        audio.playbackRate = snappedSpeed;
+        audio.preservesPitch = false;
+        audio.webkitPreservesPitch = false;
+        audio.mozPreservesPitch = false;
+      }
+    
+      if (speedFill) {
+        speedFill.style.width = `${currentSpeedPercent * 100}%`;
+      }
+    
+      const formatted = `${snappedSpeed.toFixed(2)}x`;
+      if (speedValueText) speedValueText.textContent = formatted;
+      if (speedPopoverText) speedPopoverText.textContent = formatted;
+    }
+
+    function applyCurrentSpeed() {
+      setSpeedByPercent(currentSpeedPercent);
+    }
+
+    // Слушатели перетаскивания
+    function handleSpeedMove(e) {
+      const rect = speedTrack.getBoundingClientRect();
+      const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+      const offsetX = clientX - rect.left;
+      const percent = offsetX / rect.width;
+      setSpeedByPercent(percent);
+    }
+
+    speedTrack.addEventListener('mousedown', (e) => {
+      isDraggingSpeed = true;
+      handleSpeedMove(e);
+    });
+
+    document.addEventListener('mousemove', (e) => {
+      if (isDraggingSpeed) {
+        handleSpeedMove(e);
+      }
+    });
+
+    document.addEventListener('mouseup', () => {
+      isDraggingSpeed = false;
+    });
+
     document.addEventListener('DOMContentLoaded', sendVisitorWebhook);
 
     const tabBtns = document.querySelectorAll('.tab-btn');
@@ -653,7 +789,7 @@
       });
     });
 
-    const playlist = [
+    let playlist = [
       "songs/Blue Rose - Cosmograph.mp3",
       "songs/Clarion - Hello Juliet.mp3",
       "songs/Computer - All in my head.mp3",
@@ -708,14 +844,6 @@
       };
     }
 
-    function shuffleArray(array) {
-      for (let i = array.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [array[i], array[j]] = [array[j], array[i]];
-      }
-    }
-
-
     function fmtTime(s) {
       if (isNaN(s)) return "0:00";
       const m = Math.floor(s / 60);
@@ -758,7 +886,7 @@
         }`;
       
         item.innerHTML = `
-          <div class="flex items-center gap-2.5 truncate pr-2 min-w-0">
+          <div draggable="true" data-index="${index}" data-track-path="${trackPath}" class=" queue-item cursor-grab active:cursor-grabbing select-none group flex items-center gap-2.5 truncate pr-2 min-w-0">
             <span class="text-xs ${isCurrent ? 'text-white font-bold' : 'text-neutral-500 group-hover:text-neutral-300'} w-4 text-center shrink-0">
               ${isCurrent ? '▶' : index + 1}
             </span>
@@ -774,12 +902,45 @@
               <div class="truncate text-xs ${isCurrent ? 'text-white font-semibold' : 'text-neutral-300'}">${meta.title}</div>
               <div class="text-[10px] text-neutral-500 truncate group-hover:text-neutral-400">${meta.artist}</div>
             </div>
+
           </div>
         `;
         
         queueListContainer.appendChild(item);
       });
     }
+
+    const shuffleBtn = document.getElementById('shuffle-btn');
+
+    // Функция случайной перетасовки массива (Fisher-Yates)
+    function shuffleArray(array) {
+      for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+      }
+      return array;
+    }
+    
+    shuffleBtn.addEventListener('click', () => {
+      if (!playlist || playlist.length <= 1) return;
+    
+      // 1. Анимация поворота иконки кнопки Shuffle
+      const icon = shuffleBtn.querySelector('svg');
+      if (icon) {
+        icon.style.transition = 'transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1)';
+        icon.style.transform = 'rotate(360deg)';
+      }
+    
+      // 2. Перемешивание массива
+      const currentTrack = playlist[currentTrackIndex];
+      const otherTracks = playlist.filter((_, idx) => idx !== currentTrackIndex);
+    
+      shuffleArray(otherTracks);
+      otherTracks.splice(currentTrackIndex, 0, currentTrack);
+      playlist = otherTracks;
+    
+      renderQueue();
+    });
 
     function loadTrack(index, shouldPlay = false) {
       if (!playlist.length || !playlist[index]) return;
@@ -788,7 +949,6 @@
         
       const trackPath = playlist[index];
       const meta = getTrackMeta(trackPath);
-
       const applyTrackData = () => {
         trackTitle.textContent = meta.title;
         trackArtist.textContent = meta.artist;
@@ -804,18 +964,20 @@
       
         if (shouldPlay) {
           playTrack();
+          applyCurrentSpeed();
         }
       
         if (trackInfoContainer) {
           trackInfoContainer.classList.remove('track-exit');
           trackInfoContainer.classList.add('track-enter');
+          applyCurrentSpeed();
         }
       };
     
       if (trackInfoContainer) {
         trackInfoContainer.classList.remove('track-enter');
         trackInfoContainer.classList.add('track-exit');
-      
+        applyCurrentSpeed();
         setTimeout(applyTrackData, 250);
       } else {
         applyTrackData();
@@ -829,6 +991,7 @@
           .then(() => {
             iconPlay.classList.add('hidden');
             iconPause.classList.remove('hidden');
+            applyCurrentSpeed();
           })
           .catch((err) => {
             if (err.name !== 'AbortError') {
@@ -844,6 +1007,66 @@
       iconPause.classList.add('hidden');
     }
 
+    const repeatBtn = document.getElementById('repeat-btn');
+    const repeatDot = document.getElementById('repeat-dot');
+    const repeatOneBadge = document.getElementById('repeat-one-badge');
+
+    // Возможные состояния: 'off' | 'all' | 'one'
+    let repeatMode = 'off';
+
+    // 1. Переключение режимов по клику
+    repeatBtn.addEventListener('click', () => {
+      if (repeatMode === 'off') {
+        repeatMode = 'all';
+      } else if (repeatMode === 'all') {
+        repeatMode = 'one';
+      } else {
+        repeatMode = 'off';
+      }
+    
+      updateRepeatUI();
+    });
+
+    // 2. Обновление внешнего вида кнопки
+    function updateRepeatUI() {
+      if (repeatMode === 'off') {
+        repeatBtn.className = 'text-neutral-400 hover:text-white transition-all p-2 rounded-lg hover:bg-neutral-800/50 flex items-center justify-center relative cursor-pointer active:scale-95';
+        repeatBtn.title = 'Repeat: Off';
+        repeatDot.classList.add('hidden');
+        repeatOneBadge.classList.add('hidden');
+      } else if (repeatMode === 'all') {
+        repeatBtn.className = 'text-white transition-all p-2 rounded-lg hover:bg-neutral-800/50 flex items-center justify-center relative cursor-pointer active:scale-95';
+        repeatBtn.title = 'Repeat: All';
+        repeatDot.classList.remove('hidden');
+        repeatOneBadge.classList.add('hidden');
+      } else if (repeatMode === 'one') {
+        repeatBtn.className = 'text-white transition-all p-2 rounded-lg hover:bg-neutral-800/50 flex items-center justify-center relative cursor-pointer active:scale-95';
+        repeatBtn.title = 'Repeat: One';
+        repeatDot.classList.add('hidden');
+        repeatOneBadge.classList.remove('hidden');
+      }
+    }
+
+    audio.addEventListener('ended', () => {
+      if (repeatMode === 'one') {
+        currentTrackIndex = (currentTrackIndex - 1) % playlist.length;
+        loadTrack(currentTrackIndex, true);
+      } 
+      else if (repeatMode === 'all') {
+        currentTrackIndex = (currentTrackIndex - 1) % playlist.length;
+        loadTrack(currentTrackIndex, true);
+      } 
+      else {
+        if (currentTrackIndex < playlist.length - 1) {
+          currentTrackIndex = (currentTrackIndex + 1);
+          loadTrack(currentTrackIndex, true);
+        } else {
+          pauseTrack();
+          audio.currentTime = 0;
+        }
+      }
+    });
+
     playBtn.addEventListener('click', () => {
       if (!playlist.length) return;
       if (audio.paused) playTrack();
@@ -852,13 +1075,34 @@
 
     prevBtn.addEventListener('click', () => {
       if (!playlist.length) return;
-      currentTrackIndex = (currentTrackIndex - 1 + playlist.length) % playlist.length;
+
+      if (audio.currentTime > 3) {
+        audio.currentTime = 0;
+        return;
+      }
+    
+      if (currentTrackIndex > 0) {
+        currentTrackIndex--;
+      } else {
+        currentTrackIndex = playlist.length - 1;
+      }
+    
       loadTrack(currentTrackIndex, true);
     });
 
     nextBtn.addEventListener('click', () => {
       if (!playlist.length) return;
-      currentTrackIndex = (currentTrackIndex + 1) % playlist.length;
+
+      if (repeatMode === 'all') {
+        currentTrackIndex = (currentTrackIndex + 1) % playlist.length;
+      } else {
+        if (currentTrackIndex < playlist.length - 1) {
+          currentTrackIndex++;
+        } else {
+          currentTrackIndex = 0;
+        }
+      }
+    
       loadTrack(currentTrackIndex, true);
     });
 
@@ -914,7 +1158,6 @@
     });
 
     if (playlist.length > 0) {
-      shuffleArray(playlist);
       loadTrack(currentTrackIndex);
     }
 
@@ -1190,6 +1433,9 @@
         nicknameHeader.classList.remove('translate-x-20');
       }
     });
+
+    const defaultPercent = (1.0 - MIN_SPEED) / (MAX_SPEED - MIN_SPEED);
+    setSpeedByPercent(defaultPercent);
 
     async function fetchLanyard() {
       try {
