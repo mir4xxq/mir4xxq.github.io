@@ -277,7 +277,7 @@
             <span id="discord-status-text" class="text-xs text-neutral-400 dark:text-neutral-500 font-mono">@mir4xxq</span>
           </div>
         </div>
-        <div id="visit-counter-box" class="flex items-center gap-2 px-2.5 py-1 rounded-lg bg-[#181818] border border-neutral-800 text-xs text-neutral-400 select-none">
+        <div id="visit-counter-box" class="flex items-center gap-2 px-2.5 py-1 rounded-lg bg-[#181818] border border-neutral-800 text-xs text-neutral-400 select-none duration-500 ease-out">
             <svg class="w-3.5 h-3.5 text-neutral-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
@@ -1410,34 +1410,31 @@
     );
     initVolume();
 
-    // НАСТРОЙКИ ПАСХАЛКИ
     const START_TIME = 68.6;
     const END_TIME = 84.5;  
 
-    // Слушатель времени воспроизведения
     audio.addEventListener('timeupdate', () => {
       const decoration = document.getElementById('avatar-decoration');
       const profileHeader = document.getElementById('profile-header');
       const nicknameHeader = document.getElementById('nickname-header');
+      const visitCounter = document.getElementById('visit-counter-box');
       if (!decoration || !profileHeader || !nicknameHeader) return;
     
-      // Получаем название текущего трека
       const currentTitle = trackTitle.textContent.toLowerCase();
       const isAngelTrack = currentTitle.includes('illusionary night');
   
-      // Проверяем, играет ли нужная песня и попали ли мы в тайминг
       if (isAngelTrack && audio.currentTime >= START_TIME && audio.currentTime <= END_TIME) {
-        // Показываем украшение
         decoration.classList.remove('opacity-0', 'scale-90');
         decoration.classList.add('opacity-100', 'scale-100');
         profileHeader.classList.add('translate-x-10');
         nicknameHeader.classList.add('translate-x-20');
+        visitCounter.classList.add('translate-x-20');
       } else {
-        // Скрываем украшение
         decoration.classList.remove('opacity-100', 'scale-100');
         decoration.classList.add('opacity-0', 'scale-90');
         profileHeader.classList.remove('translate-x-10');
         nicknameHeader.classList.remove('translate-x-20');
+        visitCounter.classList.remove('translate-x-20');
       }
     });
 
@@ -1447,10 +1444,10 @@
     async function initVisitCounter() {
       const visitCountEl = document.getElementById('visit-count');
       if (!visitCountEl) return;
-        
+
       const WORKSPACE = 'mir4xxq-github-io';
       const COUNTER_NAME = 'visits-mir4xxq';
-        
+
       try {
         const response = await fetch(`https://api.counterapi.dev/v2/${WORKSPACE}/${COUNTER_NAME}/up`);
         const result = await response.json();
@@ -1466,7 +1463,7 @@
         visitCountEl.textContent = '—';
       }
     }
-    
+
     document.addEventListener('DOMContentLoaded', initVisitCounter);
 
     async function fetchLanyard() {
