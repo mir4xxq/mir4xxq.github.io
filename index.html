@@ -1448,27 +1448,18 @@
       const visitCountEl = document.getElementById('visit-count');
       if (!visitCountEl) return;
         
-      // Данные из вашего личного кабинета counterapi.dev
-      const WORKSPACE = 'mir4xxq-github-io';   // Имя воркспейса
-      const COUNTER_NAME = 'visits-mir4xxq'; // Имя счетчика
-      const API_KEY = 'ut_gxX9TOb5qUFeiaMufnbqtJL3jcf8zwtEL5Gketf1';       // Токен / API Key из вкладки API Keys
+      const WORKSPACE = 'mir4xxq-github-io';
+      const COUNTER_NAME = 'visits-mir4xxq';
         
       try {
-        const response = await fetch(`https://api.counterapi.dev/v2/${WORKSPACE}/${COUNTER_NAME}/up`, {
-          method: 'GET',
-          headers: {
-            'x-api-key': API_KEY,
-            'Content-Type': 'application/json'
-          }
-        });
-      
+        const response = await fetch(`https://api.counterapi.dev/v2/${WORKSPACE}/${COUNTER_NAME}/up`);
         const result = await response.json();
-        const count = result.data?.value ?? result.count;
       
-        if (count !== undefined) {
-          visitCountEl.textContent = Number(count).toLocaleString();
+        // Достаем число напрямую из result.data.up_count
+        if (result.data && typeof result.data.up_count !== 'undefined') {
+          visitCountEl.textContent = Number(result.data.up_count).toLocaleString();
         } else {
-          visitCountEl.textContent = '1';
+          visitCountEl.textContent = '—';
         }
       } catch (err) {
         console.warn('Ошибка счетчика:', err);
