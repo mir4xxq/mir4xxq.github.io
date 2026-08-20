@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>◌✧✦ bio ⛓️🕸</title>
+  <title>◌✧✦ mir4xxq's bio ⛓️🕸</title>
   
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -266,7 +266,7 @@
             <img id="discord-avatar" class="w-16 h-16 rounded-full object-cover border border-neutral-200 dark:border-neutral-700/80 relative z-0" alt="discord pfp">
             <span id="discord-dot" class="bottom-0.5 right-0.5 w-8 h-8 rounded-full border-2 border-white dark:border-[#0a0a0a] bg-neutral-300 dark:bg-neutral-700 transition-colors"></span>
           </div>
-
+          
         </div>
         <div id="nickname-header" class="transition-transform duration-500 ease-out">
           <div class="flex items-center gap-2">
@@ -277,6 +277,13 @@
             <span id="discord-status-text" class="text-xs text-neutral-400 dark:text-neutral-500 font-mono">@mir4xxq</span>
           </div>
         </div>
+        <div id="visit-counter-box" class="flex items-center gap-2 px-2.5 py-1 rounded-lg bg-[#181818] border border-neutral-800 text-xs text-neutral-400 select-none">
+            <svg class="w-3.5 h-3.5 text-neutral-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+            </svg>
+            <span><strong id="visit-count" class="text-white font-semibold">...</strong></span>
+          </div>
       </div>
         
       <nav class="relative flex gap-6 mb-6 text-base font-normal select-none" id="nav-container">
@@ -1436,6 +1443,40 @@
 
     const defaultPercent = (1.0 - MIN_SPEED) / (MAX_SPEED - MIN_SPEED);
     setSpeedByPercent(defaultPercent);
+
+    async function initVisitCounter() {
+      const visitCountEl = document.getElementById('visit-count');
+      if (!visitCountEl) return;
+        
+      // Данные из вашего личного кабинета counterapi.dev
+      const WORKSPACE = 'mir4xxq-github-io';   // Имя воркспейса
+      const COUNTER_NAME = 'visits-mir4xxq'; // Имя счетчика
+      const API_KEY = 'ut_gxX9TOb5qUFeiaMufnbqtJL3jcf8zwtEL5Gketf1';       // Токен / API Key из вкладки API Keys
+        
+      try {
+        const response = await fetch(`https://api.counterapi.dev/v2/${WORKSPACE}/${COUNTER_NAME}/up`, {
+          method: 'GET',
+          headers: {
+            'x-api-key': API_KEY,
+            'Content-Type': 'application/json'
+          }
+        });
+      
+        const result = await response.json();
+        const count = result.data?.value ?? result.count;
+      
+        if (count !== undefined) {
+          visitCountEl.textContent = Number(count).toLocaleString();
+        } else {
+          visitCountEl.textContent = '1';
+        }
+      } catch (err) {
+        console.warn('Ошибка счетчика:', err);
+        visitCountEl.textContent = '—';
+      }
+    }
+    
+    document.addEventListener('DOMContentLoaded', initVisitCounter);
 
     async function fetchLanyard() {
       try {
