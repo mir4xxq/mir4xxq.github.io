@@ -5,15 +5,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>◌✧✦ mir4xxq's bio ⛓️🕸</title>
   
-  <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
-  <script>
-    tailwind.config = {
-      darkMode: 'class',
-    }
-  </script>
+  <script> tailwind.config = { darkMode: 'class', } </script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/color-thief/2.3.0/color-thief.umd.js"></script>
 
-  <!-- Google Fonts Inter -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -166,25 +161,30 @@
     }
 
     .glow-shine-text {
-      background: linear-gradient(
-        110deg,
-        rgba(122, 111, 184, 0.65) 0%,
-        rgba(122, 111, 184, 0.65) 40%,
-        rgba(122, 111, 184, 1.0) 50%,
-        rgba(122, 111, 184, 0.65) 60%,
-        rgba(122, 111, 184, 0.65) 100%
-      );
-      background-size: 200% 100%;
-      background-position: 100% 0;
-    
-      background-clip: text;
-      -webkit-text-fill-color: transparent;
-    
-      filter: drop-shadow(0 0 10px rgba(122, 111, 184, 0.5))
-              drop-shadow(0 0 20px rgba(122, 111, 184, 0.25));
-    
-      animation: glowShine 5s cubic-bezier(0.4, 0, 0.2, 1) infinite;
-    }
+        position: relative;
+        display: inline-block;
+      }
+      
+      .nickname-text,
+      .nickname-overlay {
+        background: linear-gradient(
+          110deg,
+          color-mix(in srgb, var(--glow-color) 65%, transparent) 0%,
+          color-mix(in srgb, var(--glow-color) 65%, transparent) 40%,
+          var(--glow-color) 50%,
+          color-mix(in srgb, var(--glow-color) 65%, transparent) 60%,
+          color-mix(in srgb, var(--glow-color) 65%, transparent) 100%
+        );
+        background-size: 200% 100%;
+        background-position: 100% 0;
+      
+        background-clip: text;
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+      
+        filter: drop-shadow(0 0 10px var(--glow-color, #7a6fb8));
+        animation: glowShine 5s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+      }
 
     @keyframes glowShine {
       0% {
@@ -263,18 +263,28 @@
                 you are an angel
               </span>
             </div>
-            <img id="discord-avatar" class="w-16 h-16 rounded-full object-cover border border-neutral-200 dark:border-neutral-700/80 relative z-0" alt="discord pfp">
-            <span id="discord-dot" class="bottom-0.5 right-0.5 w-8 h-8 rounded-full border-2 border-white dark:border-[#0a0a0a] bg-neutral-300 dark:bg-neutral-700 transition-colors"></span>
+
+            <div class="flex items-center gap-3">
+              <div class="relative z-0 w-16 h-16 rounded-full overflow-hidden shrink-0 border border-white/10">
+                <div id="avatar-track" class="flex w-[200%] h-full transition-transform duration-[450ms] ease-out">
+                  <img id="avatar-current" src="https://cdn.discordapp.com/attachments/1351611610535301342/1548029962618019870/a_8c09c7b71af27a603e2fe74aa336968f.gif?ex=6aa592c0&is=6aa44140&hm=339e31244a813301fc4fb6d48ccfda592912a4e4545da37600b417ffe3911c11&" class="w-1/2 h-full object-cover shrink-0" alt="Current Avatar">
+                  <img id="avatar-next" src="" class="w-1/2 h-full object-cover shrink-0" alt="Next Avatar">
+                </div>
+              </div>
+            </div>
           </div>
           
         </div>
         <div id="nickname-header" class="transition-transform duration-500 ease-out">
           <div class="flex items-center gap-2">
-            <h1 class="text-2xl tracking-tight font-bold flex glow-shine-text">mir4xxq</h1>
+            <span id="nickname" class="glow-shine-text relative inline-block font-bold text-base">
+              <span class="nickname-text text-2xl">mir4xxq</span>
+              <span class="nickname-overlay text-2xl absolute inset-0 opacity-0 transition-opacity duration-[450ms] pointer-events-none">mir4xxq</span>
+            </span>
             <span class="text-[8px] font-mono text-neutral-400/80 dark:text-neutral-500/80">aka q1lxxq</span>
           </div>
           <div class="flex items-center gap-2 mt-1">
-            <span id="discord-status-text" class="text-xs text-neutral-400 dark:text-neutral-500 font-mono">@mir4xxq</span>
+            <span id="status-text" class="text-xs text-neutral-400 dark:text-neutral-500 font-mono">@mir4xxq</span>
           </div>
         </div>
         <div id="visit-counter-box" class="flex items-center gap-2 px-2.5 py-1 rounded-lg bg-[#181818] border border-neutral-800 text-xs text-neutral-400 select-none duration-500 ease-out">
@@ -282,7 +292,7 @@
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
             </svg>
-            <span><strong id="visit-count" class="text-white font-semibold">...</strong></span>
+            <span><strong id="visit-count" class="text-white font-regular">...</strong></span>
           </div>
       </div>
         
@@ -553,7 +563,6 @@
     </div>
   </div>
 
-  <!-- JS Scripts -->
   <script>
     const DISCORD_ID = "991978498069643284";
 
@@ -706,7 +715,6 @@
       setSpeedByPercent(currentSpeedPercent);
     }
 
-    // Слушатели перетаскивания
     function handleSpeedMove(e) {
       const rect = speedTrack.getBoundingClientRect();
       const clientX = e.touches ? e.touches[0].clientX : e.clientX;
@@ -919,7 +927,6 @@
 
     const shuffleBtn = document.getElementById('shuffle-btn');
 
-    // Функция случайной перетасовки массива (Fisher-Yates)
     function shuffleArray(array) {
       for (let i = array.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
@@ -931,14 +938,12 @@
     shuffleBtn.addEventListener('click', () => {
       if (!playlist || playlist.length <= 1) return;
     
-      // 1. Анимация поворота иконки кнопки Shuffle
       const icon = shuffleBtn.querySelector('svg');
       if (icon) {
         icon.style.transition = 'transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1)';
         icon.style.transform = 'rotate(360deg)';
       }
     
-      // 2. Перемешивание массива
       const currentTrack = playlist[currentTrackIndex];
       const otherTracks = playlist.filter((_, idx) => idx !== currentTrackIndex);
     
@@ -1018,10 +1023,8 @@
     const repeatDot = document.getElementById('repeat-dot');
     const repeatOneBadge = document.getElementById('repeat-one-badge');
 
-    // Возможные состояния: 'off' | 'all' | 'one'
     let repeatMode = 'off';
 
-    // 1. Переключение режимов по клику
     repeatBtn.addEventListener('click', () => {
       if (repeatMode === 'off') {
         repeatMode = 'all';
@@ -1034,7 +1037,6 @@
       updateRepeatUI();
     });
 
-    // 2. Обновление внешнего вида кнопки
     function updateRepeatUI() {
       if (repeatMode === 'off') {
         repeatBtn.className = 'text-neutral-400 hover:text-white transition-all p-2 rounded-lg hover:bg-neutral-800/50 flex items-center justify-center relative cursor-pointer active:scale-95';
@@ -1464,38 +1466,82 @@
 
     document.addEventListener('DOMContentLoaded', initVisitCounter);
 
-    async function fetchLanyard() {
-      try {
-        const res = await fetch(`https://api.lanyard.rest/v1/users/${DISCORD_ID}`);
-        const { data } = await res.json();
+    let isAnimating = false;
+
+     function updateProfileAvatar(newAvatarUrl, newColor = null) {
+      if (isAnimating) return;
         
-        const avatarImg = document.getElementById('discord-avatar');
-        const statusDot = document.getElementById('discord-dot');
-        const statusText = document.getElementById('discord-status-text');
+      const track = document.getElementById('avatar-track');
+      const currentImg = document.getElementById('avatar-current');
+      const nextImg = document.getElementById('avatar-next');
+        
+      const nicknameContainer = document.getElementById('nickname');
+      const mainText = nicknameContainer?.querySelector('.nickname-text');
+      const overlayText = nicknameContainer?.querySelector('.nickname-overlay');
+        
+      if (!track || !currentImg || !nextImg) return;
+        
+      const tempImg = new Image();
+      tempImg.src = newAvatarUrl;
+        
+      tempImg.onload = () => {
+        isAnimating = true;
+      
+        nextImg.src = newAvatarUrl;
+        track.style.transform = 'translateX(-50%)';
+      
+        if (newColor && mainText && overlayText) {
+          overlayText.style.setProperty('--glow-color', newColor);
+          mainText.style.transition = 'opacity 850ms ease-out';
+          overlayText.style.opacity = '1';
+          mainText.style.opacity = '0';
 
-        if (data.discord_user.avatar) {
-          const isAnimated = data.discord_user.avatar.startsWith('a_');
-          const ext = isAnimated ? 'gif' : 'png';
-
-          avatarImg.src = `https://cdn.discordapp.com/avatars/${DISCORD_ID}/${data.discord_user.avatar}.${ext}?size=128`;
-          avatarImg.classList.remove('hidden');
+          setTimeout(() => {
+            mainText.style.setProperty('--glow-color', newColor);
+            mainText.style.transition = 'none';
+            overlayText.style.transition = 'none';
+            mainText.style.opacity = '1';
+            overlayText.style.opacity = '0';
+          
+            void overlayText.offsetWidth;
+          
+            mainText.style.transition = 'opacity 900ms ease-out';
+            overlayText.style.transition = 'opacity 450ms ease-out';
+          }, 450);
         }
-        statusText.textContent = `@${data.discord_user.username}`;
-
-        const colors = { 
-          online: 'bg-emerald-500', 
-          idle: 'bg-amber-500', 
-          dnd: 'bg-rose-500', 
-          offline: 'bg-neutral-500' 
-        };
-        statusDot.className = `absolute bottom-0.5 right-0.5 w-3 h-3 rounded-full border-2 border-white dark:border-[#0a0a0a] ${colors[data.discord_status] || 'bg-neutral-500'}`;
-      } catch (e) { 
-        console.error("Lanyard error:", e); 
-      }
+      
+        setTimeout(() => {
+          currentImg.src = newAvatarUrl;
+          track.classList.remove('transition-transform', 'duration-[450ms]', 'ease-out');
+          track.style.transform = 'translateX(0)';
+        
+          void track.offsetWidth;
+        
+          track.classList.add('transition-transform', 'duration-[450ms]', 'ease-out');
+          isAnimating = false;
+        }, 450);
+      };
     }
 
-    fetchLanyard();
-    setInterval(fetchLanyard, 10000);
+    const avatarList = [
+      { url: 'https://cdn.discordapp.com/attachments/1351611610535301342/1548029962618019870/a_8c09c7b71af27a603e2fe74aa336968f.gif?ex=6aa592c0&is=6aa44140&hm=339e31244a813301fc4fb6d48ccfda592912a4e4545da37600b417ffe3911c11&', color: 'rgb(122, 111, 184)' }, // Asuramaru
+      { url: 'https://cdn.discordapp.com/attachments/1351611610535301342/1548031490779258952/yuno_gasai_2.gif?ex=6aa5942c&is=6aa442ac&hm=978245477978783d507bb3c8c7dd20dc15e20ccb2123894ac65db7bcf01cefbd&', color: 'rgb(236, 72, 153)' },  // Yuno
+      { url: 'https://cdn.discordapp.com/attachments/1351611610535301342/1548032524389847120/5e47a701287325f07038628c2b48b811-ezgif.com-crop.gif?ex=6aa59522&is=6aa443a2&hm=d0f97073356e3fc4d5b68f8a040881bb6e282a81a82ce17958275f9688cdf0e3&', color: 'rgb(16, 185, 129)' },   // C.C.
+      { url: 'https://cdn.discordapp.com/attachments/1351611610535301342/1548032641071190038/sora.gif?ex=6aa5953e&is=6aa443be&hm=c42127291f2f742ea15254f5a083b3c3dc004c42cd37ba74875a8a2e36e98227&', color: 'rgb(229, 220, 217)' },   // Sora
+      { url: 'https://cdn.discordapp.com/attachments/1351611610535301342/1548042078989324338/kururu3.gif?ex=6aa59e08&is=6aa44c88&hm=b9554f71004cb9d327599d035f01db190a918ee16995afa337e825d4db86287e&', color: 'rgb(239, 195, 224)' },   // Kururu
+      { url: 'https://cdn.discordapp.com/attachments/1351611610535301342/1548043611847921706/69ea2b360e8e493468008065.gif?ex=6aa59f76&is=6aa44df6&hm=31b6336c1bdbe6542e242032343c83e6c2624bb7aa88e4df031892c5792db80a&', color: 'rgb(86, 37, 151)' },   // Reze
+      { url: 'https://cdn.discordapp.com/attachments/1351611610535301342/1548044068419010700/tenor2.gif?ex=6aa59fe3&is=6aa44e63&hm=e6edc8974681130de1267ed05ec04d8f714f8ec77fb2826c9107cb11bb158ad3&', color: 'rgb(131, 195, 247)' },   // Rem
+    ]; 
+
+    let currentAvatarIdx = 0;
+    updateProfileAvatar('https://cdn.discordapp.com/attachments/1351611610535301342/1548029962618019870/a_8c09c7b71af27a603e2fe74aa336968f.gif?ex=6aa592c0&is=6aa44140&hm=339e31244a813301fc4fb6d48ccfda592912a4e4545da37600b417ffe3911c11&', 'rgb(122, 111, 184)');
+
+    setInterval(() => {
+      currentAvatarIdx = (currentAvatarIdx + 1) % avatarList.length;
+      const item = avatarList[currentAvatarIdx];
+
+      updateProfileAvatar(item.url, item.color);
+    }, 10000);
 
     function updateClock() {
       const now = new Date();
