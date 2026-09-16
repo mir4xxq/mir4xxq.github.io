@@ -1547,10 +1547,13 @@
       lastAvatarIndex = randomIndex;
       return avatarPool[randomIndex];
     }
-    
+
+    const { url, color } = getRandomAvatar();
+    updateProfileAvatar(url, color);
+
     // Запуск интервала с случайным выбором
     const INTERVAL_MS = 5000; // каждые 5 секунд
-    
+
     setInterval(() => {
       const { url, color } = getRandomAvatar();
       updateProfileAvatar(url, color);
